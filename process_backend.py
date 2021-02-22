@@ -44,7 +44,14 @@ class DataSet:
         data = pd.DataFrame({})
         data['Time (s)'] = foo['Time (s)']
         data[label] = foo[label]
-        # data = data.rename(columns={'Time (s)': 'index'}).set_index('index')
+        return data
+
+    def get_data_by_labels(self, labels):
+        foo = self.main_data
+        data = pd.DataFrame({})
+        data['Time (s)'] = foo['Time (s)']
+        for label in labels:
+            data[label] = foo[label]
         return data
 
     @property

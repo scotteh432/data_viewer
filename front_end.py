@@ -37,10 +37,13 @@ if __name__ == "__main__":
 
         # Create plot dropdown window
         plot_container = st.beta_expander('Plots', expanded=True)
+        all_selected_labels = []
         with plot_container:
             x_range = st.slider("Plot Range", data_class.min_bound, data_class.max_bound, (data_class.min_bound, data_class.max_bound), 0.5)
             for selected, label in zip(all_checkboxes, all_checkbox_entries):
                 if selected is True:
+                    all_selected_labels.append(label)
+
                     data_to_plot = data_class.get_data_by_label(label)
                     data_to_plot = data_to_plot[data_to_plot['Time (s)'] >= x_range[0]]
                     data_to_plot = data_to_plot[data_to_plot['Time (s)'] <= x_range[1]]
@@ -49,6 +52,16 @@ if __name__ == "__main__":
                         x='Time (s)',
                         y=label)
                     st.altair_chart(c, use_container_width=True)
+
+            # Export file button
+            all_plotted_data = data_class.get_data_by_labels(all_selected_labels)
+            export_button = st.button('Export Plot')
+            if export_button:
+                path = os.path.join(process_backend.__root__, 'Data.xlsx')
+                all_plotted_data.to_excel(path, index=False)
+                st.write('File written to %s' % path)
+
+
 
 
 
